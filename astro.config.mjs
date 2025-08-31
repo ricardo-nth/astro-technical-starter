@@ -63,7 +63,7 @@ export default defineConfig({
       include: ['web-vitals'],
     },
   },
-  site: 'https://stargazers.club',
+  site: process.env.SITE_URL || 'https://stargazers.club',
   integrations: [
     robotsTxt(), 
     sitemap({

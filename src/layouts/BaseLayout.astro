@@ -9,9 +9,7 @@ import Meta from '@/components/seo/Meta.astro';
 import Schema from '@/components/seo/Schema.astro';
 import Favicons from '@/components/seo/Favicons.astro';
 import '@/assets/styles/global.css';
-
-// Import monitoring
-import { initSentry } from '@/utils/security/monitoring';
+import '@/assets/fonts/inter.css';
 
 // Import components
 //import Nav from '@/components/common/Nav.astro';
@@ -27,8 +25,6 @@ export interface Props {
 
 const { metadata = {}, schemaData = [] } = Astro.props;
 
-// Initialize Sentry for error monitoring
-initSentry();
 ---
 <!doctype html>
 <html lang="en">
@@ -41,7 +37,20 @@ initSentry();
     <Schema schemaData={schemaData} />
     <Performance />
     <WebVitals />
-    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    
+    <!-- Preload critical fonts (commented until font files are added) -->
+    <!-- <link rel="preload" href="/src/assets/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin> -->
+    <!-- <link rel="preload" href="/src/assets/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin> -->
+    
+    <!-- Sentry Error Monitoring (Client-Side Only) -->
+    <script type="module" is:inline>
+      import { ENV } from '/src/utils/env.js';
+      
+      if (ENV.SENTRY_DSN && !import.meta.env.DEV) {
+        const { initSentry } = await import('/src/utils/security/monitoring.js');
+        initSentry();
+      }
+    </script>
   </head>
   <body>
     <main>

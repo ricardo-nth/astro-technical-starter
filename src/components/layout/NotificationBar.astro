@@ -1,22 +1,19 @@
 ---
-// Optional notification content - can be configured or hidden
+// Static notification content
 export interface Props {
   message?: string;
   ctaText?: string;
   ctaUrl?: string;
   type?: 'info' | 'success' | 'warning' | 'announcement';
-  dismissible?: boolean;
 }
 
 const { 
   message = "🚀 New! Check out our latest technical SEO audit tool", 
   ctaText = "Learn More",
   ctaUrl = "/contact",
-  type = "announcement",
-  dismissible = true 
+  type = "announcement"
 } = Astro.props;
 ---
-
 <div class="notification-bar" data-type={type} id="notification-bar">
   <div class="notification-content">
     <div class="notification-message">
@@ -25,13 +22,6 @@ const {
         <a href={ctaUrl} class="notification-cta">{ctaText}</a>
       )}
     </div>
-    {dismissible && (
-      <button class="notification-close" aria-label="Close notification" id="close-notification">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-    )}
   </div>
 </div>
 
@@ -85,31 +75,7 @@ const {
     opacity: 0.8;
   }
 
-  .notification-close {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease;
-  }
-
-  .notification-close:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .notification-close:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.5);
-    outline-offset: 2px;
-  }
-
-  .notification-bar.hidden {
-    display: none;
-  }
+  /* No dismiss/close behavior for static bar */
 
   /* Responsive design */
   @media (max-width: 768px) {
@@ -126,34 +92,3 @@ const {
     }
   }
 </style>
-
-<script>
-  // Handle notification dismissal
-  document.addEventListener('DOMContentLoaded', function() {
-    const notificationBar = document.getElementById('notification-bar');
-    const closeButton = document.getElementById('close-notification');
-    
-    if (!notificationBar || !closeButton) return;
-
-    // Check if notification was previously dismissed
-    const isDismissed = localStorage.getItem('notification-dismissed') === 'true';
-    if (isDismissed) {
-      notificationBar.classList.add('hidden');
-      return;
-    }
-
-    // Handle close button click
-    closeButton.addEventListener('click', function() {
-      notificationBar.classList.add('hidden');
-      localStorage.setItem('notification-dismissed', 'true');
-    });
-
-    // Handle keyboard navigation
-    closeButton.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        closeButton.click();
-      }
-    });
-  });
-</script>

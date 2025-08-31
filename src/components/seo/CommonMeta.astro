@@ -1,5 +1,8 @@
 ---
 // CommonMeta.astro - Global/Common meta tags for all pages
+import { shouldEnableAnalytics } from '../../utils/env';
+
+const enableAnalytics = shouldEnableAnalytics();
 ---
 
 <!-- Essential meta tags -->
@@ -26,7 +29,7 @@
 
 <!-- DNS prefetch for performance (update URLs to match your actual external dependencies) -->
 <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-<link rel="dns-prefetch" href="//www.google-analytics.com" />
+{enableAnalytics && <link rel="dns-prefetch" href="//www.google-analytics.com" />}
 
 <!-- Preconnect to external domains for performance -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />

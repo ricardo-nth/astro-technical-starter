@@ -3,6 +3,7 @@ export interface MetaData {
   description?: string;
   url?: string;
   image?: string;
+  imageAlt?: string;
   robots?: string;
   author?: string;
   publisher?: string;
@@ -12,6 +13,7 @@ export interface MetaData {
   twitterCard?: string;
   twitterCreator?: string;
   themeColor?: string;
+  locale?: string;
 }
 
 export type SchemaData = Record<string, any> | Array<Record<string, any>>;
