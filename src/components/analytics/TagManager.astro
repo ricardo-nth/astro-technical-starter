@@ -2,6 +2,7 @@
 import analytics from '@/content/analytics'
 const { tagManagerId, isTrackingEnabled = true } = analytics
 const isProd = import.meta.env.PROD
+const nonce = Astro.locals?.nonce
 
 const gtmScript = `
 (function(w,d,s,l,i){
@@ -15,5 +16,5 @@ const gtmScript = `
 ---
 
 {isProd && isTrackingEnabled && tagManagerId && (
-  <script type="text/partytown" set:html={gtmScript}></script>
+  <script type="text/partytown" set:html={gtmScript} nonce={nonce}></script>
 )}

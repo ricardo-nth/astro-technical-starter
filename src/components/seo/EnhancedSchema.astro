@@ -3,6 +3,7 @@
  * Enhanced Schema Component
  * Automatically generates comprehensive structured data for pages
  */
+import schemaInspectorScriptUrl from './schema-dev-inspector.client.ts?url';
 
 import type { AnySchema } from '../../types/schema';
 import { generatePageSchema, cleanSchema, validateSchema } from '../../utils/schema';
@@ -59,6 +60,7 @@ const {
   products,
   customSchema,
 } = Astro.props;
+const nonce = Astro.locals?.nonce;
 
 // Get global configuration from content collections
 let globalConfig;
@@ -132,43 +134,22 @@ if (import.meta.env.DEV) {
 ---
 
 {validSchemas.map((schema, index) => (
-  <script 
-    type="application/ld+json" 
+  <script
+    type="application/ld+json"
     set:html={JSON.stringify(schema, null, import.meta.env.DEV ? 2 : 0)}
     data-schema-type={schema['@type']}
     data-schema-index={index}
+    nonce={nonce}
   />
 ))}
 
 <!-- Schema validation in development -->
 {import.meta.env.DEV && (
-  <script is:inline>
-    // Development-only schema validation
-    document.addEventListener('DOMContentLoaded', () => {
-      const schemas = document.querySelectorAll('script[type="application/ld+json"]');
-      console.group('🔍 Schema.org Validation');
-      
-      schemas.forEach((script, index) => {
-        try {
-          const data = JSON.parse(script.innerHTML);
-          const type = script.getAttribute('data-schema-type');
-          console.log(`✅ Schema ${index + 1} (${type}):`, data);
-          
-          // Basic validation warnings
-          if (!data['@context']) {
-            console.warn(`⚠️ Schema ${index + 1}: Missing @context`);
-          }
-          if (!data['@type']) {
-            console.warn(`⚠️ Schema ${index + 1}: Missing @type`);
-          }
-        } catch (error) {
-          console.error(`❌ Schema ${index + 1}: Invalid JSON`, error);
-        }
-      });
-      
-      console.groupEnd();
-    });
-  </script>
+  <script
+    type="module"
+    src={schemaInspectorScriptUrl}
+    nonce={nonce}
+  ></script>
 )}
 
 <!-- Content validation in development -->

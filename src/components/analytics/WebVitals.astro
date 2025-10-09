@@ -3,67 +3,14 @@
  * Web Vitals tracking component
  * Loads and initializes Core Web Vitals monitoring
  */
+import webVitalsScriptUrl from './web-vitals.client.ts?url';
+const nonce = Astro.locals?.nonce;
 ---
-
-<script is:inline>
-  // Import web vitals library dynamically to avoid blocking
-  import('web-vitals').then(({ onFCP, onLCP, onCLS, onFID, onTTFB, onINP }) => {
-    // Import our tracking utilities - using relative path that will be resolved at runtime
-    import('./../../utils/vitals.js').then(({ trackWebVitals, initPerformanceMonitoring, checkPerformanceBudget }) => {
-      
-      // Configure analytics
-      const config = {
-        enabled: true,
-        debug: import.meta.env.DEV, // Enable debug in development
-      };
-
-      // Track all Core Web Vitals
-      onFCP((metric) => trackWebVitals(metric, config));
-      onLCP((metric) => trackWebVitals(metric, config));
-      onCLS((metric) => trackWebVitals(metric, config));
-      onFID((metric) => trackWebVitals(metric, config));
-      onTTFB((metric) => trackWebVitals(metric, config));
-      
-      // Track INP (Interaction to Next Paint) if available
-      if (onINP) {
-        onINP((metric) => trackWebVitals(metric, config));
-      }
-
-      // Initialize additional performance monitoring
-      initPerformanceMonitoring();
-
-      // Check performance budgets after page load
-      window.addEventListener('load', () => {
-        setTimeout(checkPerformanceBudget, 1000);
-      });
-
-      // Track page navigation performance for SPAs
-      let navigationStartTime = performance.now();
-      
-      // Listen for Astro view transitions if available
-      document.addEventListener('astro:page-load', () => {
-        const navigationTime = performance.now() - navigationStartTime;
-        
-        import('./../../utils/vitals.js').then(({ trackCustomMetric }) => {
-          trackCustomMetric('astro-navigation', navigationTime);
-        });
-        
-        navigationStartTime = performance.now();
-      });
-
-      if (config.debug) {
-        console.log('🚀 Web Vitals monitoring initialized');
-      }
-    }).catch((error) => {
-      console.warn('Failed to load vitals utilities:', error);
-    });
-  }).catch((error) => {
-    // web-vitals library not available - fail silently
-    if (import.meta.env.DEV) {
-      console.warn('web-vitals library not available:', error);
-    }
-  });
-</script>
+<script
+  type="module"
+  src={webVitalsScriptUrl}
+  nonce={nonce}
+></script>
 
 <!-- Preconnect to analytics endpoints for better performance -->
 <link rel="preconnect" href="https://www.google-analytics.com" />
