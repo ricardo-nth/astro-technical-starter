@@ -5,9 +5,11 @@
  */
 
 import { generateResourceHints } from '../../utils/performance';
+import performanceScriptUrl from './performance.client.ts?url';
 
 // Generate resource hints for critical resources
 const resourceHints = generateResourceHints();
+const nonce = Astro.locals?.nonce;
 ---
 
 <!-- DNS Prefetch for external domains -->
@@ -37,151 +39,14 @@ const resourceHints = generateResourceHints();
 ))}
 
 <!-- Performance optimization scripts -->
-<script is:inline>
-  // Critical performance optimizations
-  (function() {
-    // Prefetch strategy for navigation
-    function initPrefetchStrategy() {
-      // Prefetch links on hover for faster navigation
-      const prefetchOnHover = (link) => {
-        if (link.hostname !== window.location.hostname) return;
-        if (link.dataset.prefetched) return;
-        
-        const linkElement = document.createElement('link');
-        linkElement.rel = 'prefetch';
-        linkElement.href = link.href;
-        document.head.appendChild(linkElement);
-        link.dataset.prefetched = 'true';
-      };
-
-      // Add hover listeners to internal links
-      document.addEventListener('mouseover', (event) => {
-        const target = event.target;
-        if (target && target.tagName === 'A' && target.href) {
-          prefetchOnHover(target);
-        }
-      }, { passive: true });
-
-      // Prefetch links in viewport using Intersection Observer
-      if ('IntersectionObserver' in window) {
-        const linkObserver = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const link = entry.target;
-              prefetchOnHover(link);
-              linkObserver.unobserve(link);
-            }
-          });
-        }, { 
-          rootMargin: '50px' // Start prefetching when link is 50px from viewport
-        });
-
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('a[href^="/"], a[href^="./"], a[href^="../"]').forEach((link) => {
-              linkObserver.observe(link);
-            });
-          });
-        } else {
-          document.querySelectorAll('a[href^="/"], a[href^="./"], a[href^="../"]').forEach((link) => {
-            linkObserver.observe(link);
-          });
-        }
-      }
-    }
-
-    // Font loading optimization
-    function optimizeFontLoading() {
-      // Use CSS Font Loading API if available
-      if ('fonts' in document) {
-        // Preload critical fonts
-        const fonts = [
-          new FontFace('Inter', 'url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZJhjp-Ek-_EeA.woff2)', {
-            display: 'swap',
-            unicodeRange: 'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD'
-          })
-        ];
-
-        fonts.forEach((font) => {
-          font.load().then(() => {
-            document.fonts.add(font);
-          }).catch(() => {
-            // Font loading failed, continue without it
-          });
-        });
-      }
-    }
-
-    // Critical resource loading
-    function loadCriticalResources() {
-      // Preload critical images that are likely to be LCP candidates
-      const criticalImages = [
-        // Add your critical images here
-        // '/hero-image.webp',
-        // '/logo.svg',
-      ];
-
-      criticalImages.forEach((src) => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.href = src;
-        link.as = 'image';
-        document.head.appendChild(link);
-      });
-    }
-
-    // Reduce layout shift by setting image dimensions
-    function reduceLayoutShift() {
-      const images = document.querySelectorAll('img:not([width]):not([height])');
-      images.forEach((img) => {
-        // Add placeholder dimensions to prevent layout shift
-        if (!img.style.aspectRatio && !img.style.height) {
-          img.style.aspectRatio = '16/9'; // Default aspect ratio
-        }
-      });
-    }
-
-    // Performance monitoring
-    function initPerformanceMonitoring() {
-      // Monitor long tasks
-      if ('PerformanceObserver' in window) {
-        try {
-          const observer = new PerformanceObserver((list) => {
-            for (const entry of list.getEntries()) {
-              if (entry.duration > 50) {
-                console.warn('Long task detected:', entry.duration + 'ms');
-              }
-            }
-          });
-          observer.observe({ type: 'longtask', buffered: true });
-        } catch (e) {
-          // PerformanceObserver not supported
-        }
-      }
-    }
-
-    // Initialize all optimizations
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        initPrefetchStrategy();
-        optimizeFontLoading();
-        loadCriticalResources();
-        reduceLayoutShift();
-        initPerformanceMonitoring();
-      });
-    } else {
-      initPrefetchStrategy();
-      optimizeFontLoading();
-      loadCriticalResources();
-      reduceLayoutShift();
-      initPerformanceMonitoring();
-    }
-  })();
-</script>
+<script
+  type="module"
+  src={performanceScriptUrl}
+  nonce={nonce}
+></script>
 
 <!-- Critical CSS optimization -->
-<style>
+<style nonce={nonce}>
   /* Critical above-the-fold styles */
   html {
     font-display: swap; /* Ensure text remains visible during font load */

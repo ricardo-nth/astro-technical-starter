@@ -3,6 +3,7 @@
  * Accessibility Enhancement Component
  * Provides comprehensive WCAG 2.1 AA compliance features
  */
+import accessibilityScriptUrl from './accessibility-enhancer.client.ts?url';
 
 export interface Props {
   skipLinksEnabled?: boolean;
@@ -15,6 +16,7 @@ const {
   contrastModeEnabled = true,
   reducedMotionEnabled = true
 } = Astro.props;
+const nonce = Astro.locals?.nonce;
 ---
 
 {skipLinksEnabled && (
@@ -125,7 +127,7 @@ const {
   </svg>
 </button>
 
-<style>
+<style nonce={nonce}>
   /* Skip Links */
   .skip-links {
     position: absolute;
@@ -383,86 +385,8 @@ const {
   }
 </style>
 
-<script is:inline>
-  // Simplified accessibility enhancer without TypeScript errors
-  document.addEventListener('DOMContentLoaded', function() {
-    const panel = document.getElementById('accessibility-panel');
-    const trigger = document.getElementById('accessibility-trigger');
-    const closeBtn = document.getElementById('close-accessibility');
-    
-    // Toggle panel
-    if (trigger) {
-      trigger.addEventListener('click', function() {
-        const isHidden = panel?.getAttribute('aria-hidden') === 'true';
-        panel?.setAttribute('aria-hidden', (!isHidden).toString());
-        trigger?.setAttribute('aria-expanded', isHidden.toString());
-      });
-    }
-    
-    // Close panel
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        panel?.setAttribute('aria-hidden', 'true');
-        trigger?.setAttribute('aria-expanded', 'false');
-      });
-    }
-    
-    // Accessibility toggles
-    const highContrastToggle = document.getElementById('high-contrast');
-    const largeTextToggle = document.getElementById('large-text');
-    const reducedMotionToggle = document.getElementById('reduced-motion');
-    
-    if (highContrastToggle) {
-      highContrastToggle.addEventListener('change', function() {
-        document.body.classList.toggle('high-contrast', this.checked);
-        localStorage.setItem('accessibility-highContrast', this.checked.toString());
-      });
-    }
-    
-    if (largeTextToggle) {
-      largeTextToggle.addEventListener('change', function() {
-        document.body.classList.toggle('large-text', this.checked);
-        localStorage.setItem('accessibility-largeText', this.checked.toString());
-      });
-    }
-    
-    if (reducedMotionToggle) {
-      reducedMotionToggle.addEventListener('change', function() {
-        document.body.classList.toggle('reduced-motion', this.checked);
-        localStorage.setItem('accessibility-reducedMotion', this.checked.toString());
-      });
-    }
-    
-    // Load saved preferences
-    try {
-      const savedHighContrast = localStorage.getItem('accessibility-highContrast') === 'true';
-      const savedLargeText = localStorage.getItem('accessibility-largeText') === 'true';
-      const savedReducedMotion = localStorage.getItem('accessibility-reducedMotion') === 'true';
-      
-      if (savedHighContrast) {
-        document.body.classList.add('high-contrast');
-        if (highContrastToggle) highContrastToggle.checked = true;
-      }
-      
-      if (savedLargeText) {
-        document.body.classList.add('large-text');
-        if (largeTextToggle) largeTextToggle.checked = true;
-      }
-      
-      if (savedReducedMotion) {
-        document.body.classList.add('reduced-motion');
-        if (reducedMotionToggle) reducedMotionToggle.checked = true;
-      }
-    } catch (e) {
-      console.warn('Failed to load accessibility preferences:', e);
-    }
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && panel?.getAttribute('aria-hidden') === 'false') {
-        panel.setAttribute('aria-hidden', 'true');
-        trigger?.setAttribute('aria-expanded', 'false');
-      }
-    });
-  });
-</script>
+<script
+  type="module"
+  src={accessibilityScriptUrl}
+  nonce={nonce}
+></script>

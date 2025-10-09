@@ -6,7 +6,8 @@ export interface Props {
 }
 const { schemaData } = Astro.props
 const output = Array.isArray(schemaData) ? schemaData : [schemaData]
+const nonce = Astro.locals?.nonce
 ---
 {output.map(item => (
-  <script type="application/ld+json" set:html={JSON.stringify(item)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(item)} nonce={nonce}></script>
 ))}

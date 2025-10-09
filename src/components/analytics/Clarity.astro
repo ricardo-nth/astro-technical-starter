@@ -2,6 +2,7 @@
 import analytics from '@/content/analytics'
 const { clarityId, isTrackingEnabled = true } = analytics
 const isProd = import.meta.env.PROD
+const nonce = Astro.locals?.nonce
 
 const clarityScript = `
   (function(c,l,a,r,i,t,y){
@@ -12,5 +13,5 @@ const clarityScript = `
 `;
 ---
 {isProd && isTrackingEnabled && clarityId && (
-  <script type="text/partytown" set:html={clarityScript}></script>
+  <script type="text/partytown" set:html={clarityScript} nonce={nonce}></script>
 )}

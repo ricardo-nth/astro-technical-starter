@@ -2,18 +2,48 @@
  * Enhanced Content Security Policy Configuration
  * Provides comprehensive security headers for production deployment
  */
+import { randomBytes } from 'node:crypto';
 
 export interface CSPConfig {
   reportOnly?: boolean;
   reportUri?: string;
   upgradeInsecureRequests?: boolean;
+  scriptNonce?: string;
+  styleNonce?: string;
+  scriptHashes?: string[];
+  styleHashes?: string[];
+}
+
+export function generateNonce(size = 16) {
+  return randomBytes(size).toString('base64');
+}
+
+function appendNonceAndHashes(
+  sources: string[],
+  nonce?: string,
+  hashes: string[] = []
+) {
+  if (nonce) {
+    sources.push(`'nonce-${nonce}'`);
+  }
+
+  hashes
+    .map((hash) => hash.replace(/^'+|'+$/g, ''))
+    .map((hash) => (hash.startsWith('sha256-') ? hash : `sha256-${hash}`))
+    .forEach((hash) => {
+      sources.push(`'${hash}'`);
+    });
 }
 
 export function generateCSP(config: CSPConfig = {}) {
   const {
     reportOnly = false,
     reportUri,
-    upgradeInsecureRequests = true
+    upgradeInsecureRequests = true,
+    scriptNonce,
+    styleNonce,
+    scriptHashes = [],
+    styleHashes = []
   } = config;
 
   // Base CSP directives for Astro Technical SEO Starter
@@ -21,7 +51,6 @@ export function generateCSP(config: CSPConfig = {}) {
     'default-src': ["'self'"],
     'script-src': [
       "'self'",
-      "'unsafe-inline'", // Required for Astro hydration
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
       'https://js.sentry-cdn.com',
@@ -29,7 +58,6 @@ export function generateCSP(config: CSPConfig = {}) {
     ],
     'style-src': [
       "'self'",
-      "'unsafe-inline'", // Required for critical CSS
       'https://fonts.googleapis.com'
     ],
     'img-src': [
@@ -67,6 +95,9 @@ export function generateCSP(config: CSPConfig = {}) {
     ]
   };
 
+  appendNonceAndHashes(directives['script-src'], scriptNonce, scriptHashes);
+  appendNonceAndHashes(directives['style-src'], styleNonce, styleHashes);
+
   // Add report URI if provided
   if (reportUri) {
     directives['report-uri'] = [reportUri];
@@ -78,7 +109,7 @@ export function generateCSP(config: CSPConfig = {}) {
     .join('; ');
 
   // Add upgrade-insecure-requests if enabled
-  const finalCSP = upgradeInsecureRequests 
+  const finalCSP = upgradeInsecureRequests
     ? `${cspString}; upgrade-insecure-requests`
     : cspString;
 
@@ -130,10 +161,10 @@ export function getSecurityHeaders(domain: string, config: CSPConfig = {}) {
 }
 
 // Middleware for Astro
-export function securityMiddleware(domain: string) {
+export function securityMiddleware(domain: string, options: CSPConfig = {}) {
   return async function(request: Request, next: () => Response | Promise<Response>) {
     const response = await next();
-    const headers = getSecurityHeaders(domain);
+    const headers = getSecurityHeaders(domain, options);
     
     // Apply security headers to response
     Object.entries(headers).forEach(([key, value]) => {
@@ -145,21 +176,23 @@ export function securityMiddleware(domain: string) {
 }
 
 // Development vs Production configuration
-export function getEnvironmentCSP() {
+export function getEnvironmentCSP(options: CSPConfig = {}) {
   const isDev = import.meta.env.DEV;
-  
+
   if (isDev) {
     // More permissive CSP for development
     return generateCSP({
       reportOnly: true, // Don't block in development
-      upgradeInsecureRequests: false
+      upgradeInsecureRequests: false,
+      ...options
     });
   }
-  
+
   // Strict CSP for production
   return generateCSP({
     reportOnly: false,
     reportUri: '/api/csp-report', // Optional CSP violation reporting
-    upgradeInsecureRequests: true
+    upgradeInsecureRequests: true,
+    ...options
   });
 }
