@@ -6,7 +6,6 @@
 
 import { mergeSeoData } from '@/utils/seo';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getEntry } from 'astro:content';
 import Hero from '@/components/sections/Hero.astro';
 
 export interface Props {
@@ -21,7 +20,6 @@ const {
 
 // Get SEO data and content
 const { metadata } = await mergeSeoData(pageId);
-const pageContent = await getEntry('pages', pageId);
 
 // Variant-specific configurations
 const variantConfig = {

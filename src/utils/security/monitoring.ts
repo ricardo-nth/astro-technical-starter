@@ -24,7 +24,7 @@ export function getSentryConfig(): SentryConfig | null {
     dsn: ENV.SENTRY_DSN,
     environment: ENV.NODE_ENV,
     tracesSampleRate: isProduction ? 0.1 : 1.0,
-    beforeSend(event: ErrorEvent, hint: EventHint) {
+    beforeSend(event: ErrorEvent) {
       // Filter out development errors
       if (isDevelopment) {
         return null;

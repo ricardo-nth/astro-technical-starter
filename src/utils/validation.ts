@@ -3,7 +3,6 @@
  * Provides comprehensive validation for content collections and SEO data
  */
 
-import { z } from 'astro:content';
 import type { AnySchema } from '@/types/schema';
 
 // Validation severity levels

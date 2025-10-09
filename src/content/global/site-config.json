@@ -1,10 +1,10 @@
 {
   "organization": {
     "name": "Your Technical SEO Company",
-    "url": "https://yourdomain.com",
-    "logo": "https://yourdomain.com/logo.png",
+    "url": "https://your-domain.com",
+    "logo": "https://your-domain.com/logo.png",
     "description": "Professional technical SEO services to improve your website's search engine visibility and performance.",
-    "email": "contact@yourdomain.com",
+    "email": "contact@your-domain.com",
     "telephone": "+1-555-123-4567",
     "address": {
       "streetAddress": "123 SEO Street",
@@ -14,9 +14,9 @@
       "addressCountry": "US"
     },
     "socialMedia": [
-      "https://twitter.com/yourcompany",
-      "https://linkedin.com/company/yourcompany",
-      "https://facebook.com/yourcompany"
+      "https://twitter.com/your-handle",
+      "https://linkedin.com/company/your-company",
+      "https://facebook.com/your-company"
     ],
     "foundingDate": "2020",
     "numberOfEmployees": "10-50",
@@ -25,16 +25,16 @@
   "website": {
     "name": "Technical SEO Starter",
     "description": "Professional Astro template for technical SEO agencies and consultants",
-    "url": "https://yourdomain.com",
+    "url": "https://your-domain.com",
     "inLanguage": "en-US",
     "copyrightYear": 2024
   },
   "defaultAuthor": {
     "name": "SEO Expert",
-    "url": "https://yourdomain.com/about",
-    "image": "https://yourdomain.com/author.jpg",
+    "url": "https://your-domain.com/about",
+    "image": "https://your-domain.com/author.jpg",
     "jobTitle": "Technical SEO Consultant",
-    "email": "expert@yourdomain.com"
+    "email": "expert@your-domain.com"
   },
   "business": {
     "type": "ProfessionalService",

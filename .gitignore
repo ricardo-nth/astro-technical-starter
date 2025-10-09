@@ -67,3 +67,21 @@ Desktop.ini
 
 # Development tools
 .playwright-mcp/
+storybook-static/
+.storybook/build/
+
+# Bundle analysis
+bundle-report/
+webpack-bundle-analyzer-report.html
+
+# Performance reports
+lighthouse/
+*.lighthouse.json
+
+# Security scan results
+audit-results/
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3

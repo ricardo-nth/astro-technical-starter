@@ -1,12 +1,12 @@
 {
   "name": "John Doe",
-  "role": "Content Writer",
-  "bio": "Sample bio text.",
-  "image": "/placeholder-avatar.svg",
-  "email": "john@example.com",
+  "role": "SEO Content Strategist",
+  "bio": "Experienced content strategist specializing in technical SEO and conversion optimization. Passionate about creating content that both users and search engines love.",
+  "image": "/images/team/author-placeholder.svg",
+  "email": "john@yourcompany.com",
   "social": {
-    "twitter": "https://twitter.com/johndoe",
-    "linkedin": "https://linkedin.com/in/johndoe"
+    "twitter": "https://twitter.com/yourhandle",
+    "linkedin": "https://linkedin.com/in/yourprofile"
   },
-  "expertise": ["SEO", "Content Marketing"]
+  "expertise": ["Technical SEO", "Content Strategy", "Schema Markup", "Core Web Vitals"]
 }

@@ -88,7 +88,7 @@ export function generateCSP(config: CSPConfig = {}) {
   };
 }
 
-export function getSecurityHeaders(domain: string, config: CSPConfig = {}) {
+export function getSecurityHeaders(config: CSPConfig = {}) {
   const csp = generateCSP(config);
   
   return {
@@ -130,10 +130,10 @@ export function getSecurityHeaders(domain: string, config: CSPConfig = {}) {
 }
 
 // Middleware for Astro
-export function securityMiddleware(domain: string) {
-  return async function(request: Request, next: () => Response | Promise<Response>) {
+export function securityMiddleware(_domain?: string) {
+  return async function(_: Request, next: () => Response | Promise<Response>) {
     const response = await next();
-    const headers = getSecurityHeaders(domain);
+    const headers = getSecurityHeaders();
     
     // Apply security headers to response
     Object.entries(headers).forEach(([key, value]) => {

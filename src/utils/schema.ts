@@ -18,7 +18,6 @@ import type {
   SchemaConfig,
   SearchAction,
   Question,
-  Answer,
   ImageObject
 } from '../types/schema';
 
@@ -437,7 +436,7 @@ export function validateSchema(schema: AnySchema): boolean {
  * Clean schema data (remove undefined/null values)
  */
 export function cleanSchema<T extends AnySchema>(schema: T): T {
-  const cleaned = JSON.parse(JSON.stringify(schema, (key, value) => {
+  const cleaned = JSON.parse(JSON.stringify(schema, (_, value) => {
     if (value === null || value === undefined) {
       return undefined;
     }

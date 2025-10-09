@@ -168,7 +168,7 @@ export const basicAnalyticsPlugin: Plugin = {
   description: 'Basic Google Analytics integration',
   category: 'analytics',
   tier: 'free',
-  init: async (config) => {
+  init: async () => {
     console.log('🔍 Basic Analytics initialized');
     // Initialize GA4 basic tracking
   }
@@ -181,7 +181,7 @@ export const ecommercePlugin: Plugin = {
   category: 'ecommerce',
   tier: 'premium',
   dependencies: ['basic-analytics'],
-  init: async (config) => {
+  init: async () => {
     console.log('🛒 E-commerce SEO initialized');
     // Add product schema, shopping analytics, etc.
   }
@@ -193,7 +193,7 @@ export const localBusinessPlugin: Plugin = {
   description: 'Local business SEO features',
   category: 'local',
   tier: 'premium',
-  init: async (config) => {
+  init: async () => {
     console.log('📍 Local Business SEO initialized');
     // Add local schema, maps integration, etc.
   }
@@ -206,8 +206,8 @@ export const enterpriseAnalyticsPlugin: Plugin = {
   category: 'analytics',
   tier: 'enterprise',
   dependencies: ['basic-analytics'],
-  init: async (config) => {
-    console.log('📊 Enterprise Analytics initialized');
+  init: async () => {
+    console.log('📁 Enterprise Analytics initialized');
     // Initialize advanced tracking, custom events, etc.
   }
 };

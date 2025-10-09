@@ -15,5 +15,5 @@ const gtmScript = `
 ---
 
 {isProd && isTrackingEnabled && tagManagerId && (
-  <script type="text/partytown" set:html={gtmScript}></script>
+  <script type="text/partytown" is:inline set:html={gtmScript}></script>
 )}

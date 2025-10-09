@@ -30,13 +30,6 @@ function formatDate(date: Date) {
   });
 }
 
-// Helper function to get excerpt from content
-function getExcerpt(content: string, maxLength = 150) {
-  const textContent = content.replace(/[#*`\[\]]/g, '').trim();
-  return textContent.length > maxLength 
-    ? textContent.substring(0, maxLength).trim() + '...'
-    : textContent;
-}
 
 // Group posts by category
 const categories = [...new Set(allPosts.map(post => post.data.category))];

@@ -12,5 +12,5 @@ const clarityScript = `
 `;
 ---
 {isProd && isTrackingEnabled && clarityId && (
-  <script type="text/partytown" set:html={clarityScript}></script>
+  <script type="text/partytown" is:inline set:html={clarityScript}></script>
 )}

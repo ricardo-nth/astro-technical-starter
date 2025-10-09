@@ -42,7 +42,7 @@ const { testimonials } = Astro.props;
                 
                 {testimonial.rating && (
                   <div class="rating">
-                    {Array.from({ length: testimonial.rating }, (_, i) => (
+                    {Array.from({ length: testimonial.rating }, () => (
                       <span class="star">★</span>
                     ))}
                   </div>

@@ -1,7 +1,46 @@
 {
-  "name": "boilerplate-vps",
+  "name": "astro-technicalseo-starter",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "Always free, production-ready Astro template with enterprise-grade performance optimization and technical SEO excellence",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ricardo-nth/astro-technicalSEO-starter.git"
+  },
+  "homepage": "https://github.com/ricardo-nth/astro-technicalSEO-starter#readme",
+  "bugs": {
+    "url": "https://github.com/ricardo-nth/astro-technicalSEO-starter/issues"
+  },
+  "author": {
+    "name": "Ricardo A M Calcina",
+    "url": "https://github.com/ricardo-nth"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [
+    "astro",
+    "astro-template",
+    "template",
+    "starter",
+    "seo",
+    "technical-seo",
+    "performance",
+    "lighthouse",
+    "typescript",
+    "vanilla-css",
+    "schema-org",
+    "structured-data",
+    "core-web-vitals",
+    "web-performance",
+    "meta-tags",
+    "open-graph",
+    "twitter-cards",
+    "sitemap",
+    "robots-txt"
+  ],
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "astro dev",

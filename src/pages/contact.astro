@@ -3,7 +3,6 @@
 import SiteLayout from '@/layouts/SiteLayout.astro';
 
 // Import components
-import Welcome from '@/components/sections/Welcome.astro';
 import ContactInfo from '@/components/sections/ContactInfo.astro';
 import EnhancedSchema from '@/components/seo/EnhancedSchema.astro';
 
@@ -12,14 +11,12 @@ import { getEntry } from 'astro:content';
 import { getContactInfo } from '@/utils/content.ts';
 
 // Get page content and SEO data
-const pageContent = await getEntry('pages', 'contact');
 const seoData = await getEntry('seo', 'contact');
 
 // Get contact data
 const contactInfo = await getContactInfo();
 
 // Extract data
-const { hero } = pageContent?.data || {};
 const {
   title,
   description,

@@ -134,6 +134,7 @@ if (import.meta.env.DEV) {
 {validSchemas.map((schema, index) => (
   <script 
     type="application/ld+json" 
+    is:inline
     set:html={JSON.stringify(schema, null, import.meta.env.DEV ? 2 : 0)}
     data-schema-type={schema['@type']}
     data-schema-index={index}

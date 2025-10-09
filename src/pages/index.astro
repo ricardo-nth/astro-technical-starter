@@ -14,7 +14,6 @@ import { getEntry } from 'astro:content';
 import { getServices, getFeaturedTestimonials } from '@/utils/content.ts';
 
 // Get page content and SEO data
-const pageContent = await getEntry('pages', 'index');
 const seoData = await getEntry('seo', 'index');
 
 // Get business data for homepage
@@ -22,7 +21,6 @@ const servicesData = await getServices();
 const testimonials = await getFeaturedTestimonials();
 
 // Extract data
-const { hero } = pageContent?.data || {};
 const {
   title,
   description,
