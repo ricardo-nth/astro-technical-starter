@@ -69,7 +69,8 @@ jobs:
           
       - name: Deploy to Netlify
         if: vars.NETLIFY_SITE_ID
-        uses: netlify/actions/cli@master
+        # netlify/actions/cli v2.0.1
+        uses: netlify/actions/cli@1f0601d2b36aa0f5bd8d0fc9774441890f4c3af2
         with:
           args: deploy --prod --dir=dist
         env:
@@ -79,7 +80,8 @@ jobs:
           
       - name: Deploy to Vercel
         if: vars.VERCEL_PROJECT_ID
-        uses: BetaHuhn/deploy-to-vercel-action@v1
+        # BetaHuhn/deploy-to-vercel-action v1.4.0
+        uses: BetaHuhn/deploy-to-vercel-action@8d2d1ec353f64fdf75f1a4bb7a4484a1c2cc74fd
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
