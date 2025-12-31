@@ -1,54 +1,33 @@
 ---
-// Import layout
 import SiteLayout from '@/layouts/SiteLayout.astro';
+import ContactForm from '@/components/blocks/contactform.astro';
+import Pricing from '@/components/blocks/pricing.astro';
+import CTA from '@/components/blocks/CTA.astro';
+import type { ContactPage, WithContext } from 'schema-dts';
 
-// Import components
-import ContactInfo from '@/components/sections/ContactInfo.astro';
-import EnhancedSchema from '@/components/seo/EnhancedSchema.astro';
+// Page SEO
+const title = 'Contact Us | Technical SEO Starter';
+const description = 'Get in touch with our technical SEO experts. We are here to help.';
 
-// Import page content from Content Collections
-import { getEntry } from 'astro:content';
-import { getContactInfo } from '@/utils/content.ts';
-
-// Get page content and SEO data
-const seoData = await getEntry('seo', 'contact');
-
-// Get contact data
-const contactInfo = await getContactInfo();
-
-// Extract data
-const {
-  title,
+// Schema.org ContactPage
+const schema: WithContext<ContactPage> = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: title,
   description,
-  keywords,
-  robots,
-  author,
-  schema,
-} = seoData?.data || {};
-
-// Page metadata
-const metadata = {
-  title: title || 'Contact - Technical SEO Starter',
-  description: description || 'Get in touch with our technical SEO experts',
-  url: new URL(Astro.url.pathname, Astro.site).toString(),
-  robots,
-  author,
-  keywords: keywords?.join(', '),
-  ogType: 'website',
-  siteName: 'Technical SEO Starter',
-  twitterCard: 'summary_large_image',
+  url: new URL('/contact', Astro.site).toString(),
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.toString() },
+      { '@type': 'ListItem', position: 2, name: 'Contact' },
+    ],
+  },
 };
 ---
 
-<SiteLayout metadata={metadata}>
-  <EnhancedSchema
-    type={schema?.type || 'contact'}
-    title={title || 'Contact - Technical SEO Starter'}
-    description={description || 'Get in touch with our technical SEO experts'}
-    url={new URL(Astro.url.pathname, Astro.site).toString()}
-    author={author ? { name: author } : undefined}
-    breadcrumbs={schema?.breadcrumbs}
-  />
-  
-  <ContactInfo contact={contactInfo} />
+<SiteLayout title={title} description={description} schema={schema}>
+  <ContactForm />
+  <Pricing />
+  <CTA />
 </SiteLayout>

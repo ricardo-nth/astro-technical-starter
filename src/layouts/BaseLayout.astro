@@ -1,59 +1,100 @@
 ---
-// Import Components
-import CommonMeta from '@/components/seo/CommonMeta.astro'
-import SiteVerification from '@/components/analytics/SiteVerification.astro'
-import TagManager from '@/components/analytics/TagManager.astro'
-import WebVitals from '@/components/analytics/WebVitals.astro'
-import Performance from '@/components/performance/Performance.astro'
-import Meta from '@/components/seo/Meta.astro';
-import Schema from '@/components/seo/Schema.astro';
+/**
+ * BaseLayout - Core HTML structure with SEO
+ * 
+ * Uses community plugins:
+ * - astro-seo: Meta tags, Open Graph, Twitter Cards
+ * - astro-seo-schema: JSON-LD structured data
+ */
+import { SEO, type Props as SEOProps } from 'astro-seo';
+import { Schema } from 'astro-seo-schema';
+import type { Thing, WithContext } from 'schema-dts';
+
+// Components
+import CommonMeta from '@/components/seo/CommonMeta.astro';
 import Favicons from '@/components/seo/Favicons.astro';
+import SiteVerification from '@/components/analytics/SiteVerification.astro';
+import TagManager from '@/components/analytics/TagManager.astro';
+import WebVitals from '@/components/analytics/WebVitals.astro';
+
+// Styles
 import '@/styles/global.css';
 
-// Import components
-//import Nav from '@/components/common/Nav.astro';
-
-// Import Types
-import type { MetaData } from '@/types/seo';
-import type { SchemaData } from '@/types/seo';
+// Site config
+const SITE_NAME = 'Technical SEO Starter';
+const SITE_URL = Astro.site?.toString() || 'https://example.com';
 
 export interface Props {
-  metadata?: MetaData;
-  schemaData?: SchemaData[];
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  schema?: WithContext<Thing> | WithContext<Thing>[];
 }
 
-const { metadata = {}, schemaData = [] } = Astro.props;
+const { 
+  title, 
+  description, 
+  image = '/og-image.png',
+  noindex = false,
+  schema,
+} = Astro.props;
 
+const canonicalURL = new URL(Astro.url.pathname, SITE_URL).toString();
+const ogImageURL = new URL(image, SITE_URL).toString();
+
+// SEO props for astro-seo
+const seoProps: SEOProps = {
+  title,
+  description,
+  canonical: canonicalURL,
+  noindex,
+  openGraph: {
+    basic: {
+      title,
+      type: 'website',
+      image: ogImageURL,
+      url: canonicalURL,
+    },
+    optional: {
+      description,
+      siteName: SITE_NAME,
+      locale: 'en_US',
+    },
+    image: {
+      alt: title,
+      width: 1200,
+      height: 630,
+    },
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+    image: ogImageURL,
+    imageAlt: title,
+  },
+};
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
     <CommonMeta />
+    <Favicons />
+    <SEO {...seoProps} />
+    
+    {schema && (
+      Array.isArray(schema) 
+        ? schema.map(s => <Schema item={s} />)
+        : <Schema item={schema} />
+    )}
+    
     <SiteVerification />
     <TagManager />
-	  <Favicons />
-    <Meta {...metadata} />
-    <Schema schemaData={schemaData} />
-    <Performance />
     <WebVitals />
-    
-    <!-- Preload critical fonts (commented until font files are added) -->
-    <!-- <link rel="preload" href="/src/assets/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin> -->
-    <!-- <link rel="preload" href="/src/assets/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin> -->
-    
-    <!-- Sentry Error Monitoring (Client-Side Only) -->
-    <script type="module" is:inline>
-      import { ENV } from '/src/utils/env.js';
-      
-      if (ENV.SENTRY_DSN && !import.meta.env.DEV) {
-        const { initSentry } = await import('/src/utils/security/monitoring.js');
-        initSentry();
-      }
-    </script>
   </head>
   <body>
-    <main>
-      <slot />
-    </main>
+    <slot />
   </body>
 </html>

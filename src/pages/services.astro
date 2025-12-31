@@ -1,519 +1,81 @@
 ---
-// Import layout
 import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import Bento from '@/components/blocks/bento.astro';
+import Team from '@/components/blocks/team.astro';
+import FAQ from '@/components/blocks/FAQ.astro';
+import CTA from '@/components/blocks/CTA.astro';
+import type { WebPage, FAQPage, WithContext } from 'schema-dts';
 
-// Import components
-import StandardHero from '../components/ui/StandardHero.astro';
-import StandardCTA from '../components/ui/StandardCTA.astro';
-import EnhancedSchema from '../components/seo/EnhancedSchema.astro';
+// Page SEO
+const title = 'Our Services | Technical SEO Starter';
+const description = 'Comprehensive technical SEO services to boost your search engine visibility and website performance.';
 
-// Import content utilities
-import { getServices, getAllCaseStudies } from '../utils/content.ts';
+// FAQ data - used for both component and schema
+const faqs = [
+  {
+    question: 'What is technical SEO?',
+    answer: 'Technical SEO refers to optimizing your website infrastructure to help search engines crawl, index, and render your pages effectively. This includes site speed, mobile-friendliness, structured data, XML sitemaps, and more.',
+  },
+  {
+    question: 'How long does it take to see SEO results?',
+    answer: 'SEO is a long-term strategy. While some technical improvements can show results within weeks, most SEO efforts take 3-6 months to show significant improvements in search rankings and organic traffic.',
+  },
+  {
+    question: 'What is structured data and why does it matter?',
+    answer: 'Structured data is code (usually JSON-LD) that helps search engines understand your content better. It can enable rich snippets in search results, improving click-through rates and visibility.',
+  },
+  {
+    question: 'Do you offer ongoing SEO support?',
+    answer: 'Yes, we offer both one-time audits and ongoing SEO retainers. Technical SEO requires continuous monitoring as search engines update their algorithms and your site evolves.',
+  },
+];
 
-// Get services data and case studies
-const servicesData = await getServices();
-const caseStudies = await getAllCaseStudies();
-
-// Helper function to get case studies for a service
-function getCaseStudiesForService(serviceId: string) {
-  return caseStudies.filter(study => study.data.services.includes(serviceId));
-}
-
-// Page metadata
-const metadata = {
-  title: 'Our Services - Technical SEO Solutions',
-  description: 'Comprehensive technical SEO services to boost your search engine visibility and website performance. From audits to optimization.',
-  url: new URL(Astro.url.pathname, Astro.site).toString(),
-  keywords: 'technical SEO, SEO audit, website optimization, performance optimization, schema markup',
-  ogType: 'website',
-  siteName: 'Technical SEO Starter',
-  twitterCard: 'summary_large_image',
+// Schema.org - WebPage + FAQPage combined
+const webPageSchema: WithContext<WebPage> = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url: new URL('/services', Astro.site).toString(),
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site?.toString() },
+      { '@type': 'ListItem', position: 2, name: 'Services' },
+    ],
+  },
 };
+
+const faqSchema: WithContext<FAQPage> = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+};
+
+// Pass both schemas as array
+const schemas = [webPageSchema, faqSchema];
 ---
 
-<SiteLayout metadata={metadata}>
-  <EnhancedSchema
-    type="webpage"
-    title="Our Services - Technical SEO Solutions"
-    description="Comprehensive technical SEO services to boost your search engine visibility and website performance."
-    url={new URL(Astro.url.pathname, Astro.site).toString()}
-    breadcrumbs={[
-      { name: 'Home', url: '/' },
-      { name: 'Services' }
-    ]}
-    services={servicesData?.services}
+<SiteLayout title={title} description={description} schema={schemas}>
+  <PageHero 
+    badge="Professional Services"
+    title="Technical SEO Solutions"
+    description="Elevate your digital presence with our expert technical SEO services. From comprehensive audits to performance optimization, we deliver measurable results."
   />
   
-  <StandardHero 
-    badge={{
-      icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
-      text: "Professional Services"
-    }}
-    title="Comprehensive Technical SEO Solutions"
-    highlightText="Technical SEO"
-    description="Elevate your digital presence with our expert technical SEO services. From comprehensive audits to performance optimization, we deliver measurable results that drive growth."
-    stats={[
-      {
-        icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
-        number: "100%",
-        label: "Success Rate",
-        color: "blue"
-      },
-      {
-        icon: "M13 10V3L4 14h7v7l9-11h-7z",
-        number: "150%",
-        label: "Avg. Traffic Increase",
-        color: "green"
-      },
-      {
-        icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
-        number: "48hrs",
-        label: "Response Time",
-        color: "purple"
-      }
-    ]}
-  />
-
-  <main class="services-page">
-    <div class="container">
-
-      <!-- Services Grid -->
-      {servicesData && servicesData.services && (
-        <section class="services-grid">
-          {servicesData.services.map(service => {
-            const relatedCaseStudies = getCaseStudiesForService(service.id);
-            
-            return (
-              <div class="service-card">
-                <div class="service-header">
-                  <h2>{service.name}</h2>
-                  {service.popular && <span class="popular-badge">Popular</span>}
-                </div>
-                
-                <p class="service-description">{service.description}</p>
-                
-                <div class="service-features">
-                  <h3>What's Included:</h3>
-                  <ul>
-                    {service.features.map(feature => (
-                      <li>{feature}</li>
-                    ))}
-                  </ul>
-                </div>
-                
-                {service.category && (
-                  <div class="service-category">
-                    <span class="category-badge">{service.category}</span>
-                  </div>
-                )}
-                
-                {relatedCaseStudies.length > 0 && (
-                  <div class="case-studies-section">
-                    <h3>Success Stories:</h3>
-                    <div class="case-studies-list">
-                      {relatedCaseStudies.slice(0, 2).map(study => (
-                        <div class="case-study-preview">
-                          <h4>{study.data.title}</h4>
-                          <p class="case-study-client">
-                            {study.data.client} • {study.data.industry}
-                          </p>
-                          <div class="case-study-results">
-                            {study.data.results.slice(0, 2).map(result => (
-                              <div class="result-item">
-                                <span class="result-value">{result.value}</span>
-                                <span class="result-metric">{result.metric}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                <div class="service-cta">
-                  <a href="/contact" class="btn-primary">Get Started</a>
-                  <a href="#quote" class="btn-secondary">Request Quote</a>
-                </div>
-              </div>
-            );
-          })}
-        </section>
-      )}
-    </div>
-  </main>
+  <div id="content">
+    <Bento />
+    <Team />
+    <FAQ faqs={faqs} />
+  </div>
   
-  <StandardCTA 
-    badge={{
-      icon: "M13 10V3L4 14h7v7l9-11h-7z",
-      text: "Ready to Start?"
-    }}
-    title="Ready to Boost Your SEO Performance?"
-    highlightText="Boost"
-    description="Let our technical SEO experts help you achieve better search rankings and improved website performance. Join our success stories today."
-    buttons={[
-      {
-        text: "Start Your Project",
-        href: "/contact",
-        type: "primary",
-        icon: "M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
-      },
-      {
-        text: "View Case Studies",
-        href: "/case-studies",
-        type: "secondary",
-        icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-      }
-    ]}
-  />
+  <CTA />
 </SiteLayout>
-
-<style>
-  .services-page {
-    padding: 4rem 0;
-    background: white;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-
-  .services-header {
-    text-align: center;
-    margin-bottom: 4rem;
-  }
-
-  .services-header h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #1a202c;
-    margin-bottom: 1rem;
-  }
-
-  .services-header p {
-    font-size: 1.25rem;
-    color: #4a5568;
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-    gap: 3rem;
-    margin-bottom: 4rem;
-  }
-
-  .service-card {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 2.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .service-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  }
-
-  .service-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-  }
-
-  .service-header h2 {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #1a202c;
-    flex: 1;
-  }
-
-  .popular-badge {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 25px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-left: 1rem;
-  }
-
-  .service-description {
-    font-size: 1.125rem;
-    color: #4a5568;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-  }
-
-  .service-features {
-    margin-bottom: 2rem;
-  }
-
-  .service-features h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1a202c;
-    margin-bottom: 1rem;
-  }
-
-  .service-features ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .service-features li {
-    padding: 0.5rem 0;
-    padding-left: 1.5rem;
-    position: relative;
-    color: #2d3748;
-  }
-
-  .service-features li::before {
-    content: '✓';
-    position: absolute;
-    left: 0;
-    color: #10b981;
-    font-weight: bold;
-  }
-
-  .service-category {
-    margin-bottom: 2rem;
-  }
-
-  .category-badge {
-    background: #f0f4f8;
-    color: #4a5568;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .case-studies-section {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-  }
-
-  .case-studies-section h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1a202c;
-    margin-bottom: 1rem;
-  }
-
-  .case-studies-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .case-study-preview {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-  }
-
-  .case-study-preview h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1a202c;
-    margin-bottom: 0.5rem;
-  }
-
-  .case-study-client {
-    font-size: 0.875rem;
-    color: #4a5568;
-    margin-bottom: 1rem;
-  }
-
-  .case-study-results {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .result-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.75rem;
-    background: #f0f4f8;
-    border-radius: 8px;
-    min-width: 100px;
-  }
-
-  .result-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #667eea;
-  }
-
-  .result-metric {
-    font-size: 0.75rem;
-    color: #4a5568;
-    text-align: center;
-  }
-
-  .service-cta {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 2rem;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 0.875rem 2rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    display: inline-block;
-    text-align: center;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-  }
-
-  .btn-secondary {
-    background: white;
-    color: #667eea;
-    padding: 0.875rem 2rem;
-    border: 2px solid #667eea;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    display: inline-block;
-    text-align: center;
-  }
-
-  .btn-secondary:hover {
-    background: #667eea;
-    color: white;
-    transform: translateY(-2px);
-  }
-
-  .services-cta {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 16px;
-    padding: 4rem 2rem;
-    text-align: center;
-    margin-top: 4rem;
-  }
-
-  .cta-content h2 {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 1rem;
-  }
-
-  .cta-content p {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .cta-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .services-cta .btn-primary {
-    background: white;
-    color: #667eea;
-  }
-
-  .services-cta .btn-primary:hover {
-    background: #f8fafc;
-    transform: translateY(-2px);
-  }
-
-  .services-cta .btn-secondary {
-    background: transparent;
-    color: white;
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .services-cta .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: white;
-  }
-
-  @media (max-width: 768px) {
-    .services-page {
-      padding: 3rem 0;
-    }
-
-    .services-header h1 {
-      font-size: 2.25rem;
-    }
-
-    .services-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .service-card {
-      padding: 2rem;
-    }
-
-    .service-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-
-    .popular-badge {
-      margin-left: 0;
-    }
-
-    .service-cta {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .case-study-results {
-      justify-content: center;
-    }
-
-    .services-cta {
-      padding: 3rem 1.5rem;
-    }
-
-    .cta-content h2 {
-      font-size: 1.875rem;
-    }
-
-    .cta-buttons {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .cta-buttons a {
-      min-width: 200px;
-    }
-  }
-</style>

@@ -1,12 +1,21 @@
 ---
-import verification from '@/content/verification'
+/**
+ * Site Verification Meta Tags
+ * Add your verification codes via props or environment variables
+ */
+interface Props {
+  google?: string;
+  bing?: string;
+  pinterest?: string;
+}
 
-const { google, bing, pinterest } = verification
-
-// Only render meta tags if verification codes are provided
-// For DNS verification, leave these empty and use TXT records instead
+const { 
+  google = import.meta.env.PUBLIC_GOOGLE_VERIFICATION,
+  bing = import.meta.env.PUBLIC_BING_VERIFICATION,
+  pinterest = import.meta.env.PUBLIC_PINTEREST_VERIFICATION,
+} = Astro.props;
 ---
 
-{google && google.trim() && <meta name="google-site-verification" content={google} />}
-{bing && bing.trim() && <meta name="msvalidate.01" content={bing} />}
-{pinterest && pinterest.trim() && <meta name="p:domain_verify" content={pinterest} />}
+{google && <meta name="google-site-verification" content={google} />}
+{bing && <meta name="msvalidate.01" content={bing} />}
+{pinterest && <meta name="p:domain_verify" content={pinterest} />}

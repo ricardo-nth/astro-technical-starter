@@ -1,0 +1,31 @@
+---
+/**
+ * Footer Component
+ * Simple Tailwind CSS footer
+ */
+
+interface Props {
+  links?: { label: string; href: string }[];
+}
+
+const { links = [
+  { label: 'Home', href: '/' },
+  { label: 'Services', href: '/services' },
+  { label: 'Contact', href: '/contact' },
+] } = Astro.props;
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-white dark:bg-gray-900">
+  <div class="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
+    <nav class="-mb-6 flex flex-wrap justify-center gap-x-12 gap-y-3 text-sm/6" aria-label="Footer">
+      {links.map((link) => (
+        <a href={link.href} class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">{link.label}</a>
+      ))}
+    </nav>
+    <p class="mt-10 text-center text-sm/6 text-gray-600 dark:text-gray-400">
+      &copy; {currentYear} Technical SEO Starter. All rights reserved.
+    </p>
+  </div>
+</footer>

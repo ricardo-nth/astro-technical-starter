@@ -1,9 +1,16 @@
 ---
-import analytics from '@/content/analytics'
-const { tagManagerId, isTrackingEnabled = true } = analytics
-const isProd = import.meta.env.PROD
+/**
+ * Google Tag Manager
+ * Set GTM ID via props or PUBLIC_GTM_ID environment variable
+ */
+interface Props {
+  tagManagerId?: string;
+}
 
-const gtmScript = `
+const { tagManagerId = import.meta.env.PUBLIC_GTM_ID } = Astro.props;
+const isProd = import.meta.env.PROD;
+
+const gtmScript = tagManagerId ? `
 (function(w,d,s,l,i){
   w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
   var f=d.getElementsByTagName(s)[0],
@@ -11,9 +18,9 @@ const gtmScript = `
   j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
   f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','${tagManagerId}');
-`;
+` : '';
 ---
 
-{isProd && isTrackingEnabled && tagManagerId && (
+{isProd && tagManagerId && (
   <script type="text/partytown" is:inline set:html={gtmScript}></script>
 )}

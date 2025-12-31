@@ -1,44 +1,35 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import NotificationBar from '../components/layout/NotificationBar.astro';
-import Navigation from '../components/layout/Navigation.astro';
-import Footer from '../components/layout/Footer.astro';
-
-// Import Types
-import type { MetaData } from '../types/seo';
-import type { SchemaData } from '../types/seo';
+import Header from '../components/blocks/Header.astro';
+import Footer from '../components/blocks/Footer.astro';
+import type { Thing, WithContext } from 'schema-dts';
 
 export interface Props {
-  metadata?: MetaData;
-  schemaData?: SchemaData[];
-  showNotificationBar?: boolean;
-  notificationProps?: {
-    message?: string;
-    ctaText?: string;
-    ctaUrl?: string;
-    type?: 'info' | 'success' | 'warning' | 'announcement';
-    dismissible?: boolean;
-  };
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  schema?: WithContext<Thing> | WithContext<Thing>[];
 }
 
-const { 
-  metadata = {}, 
-  schemaData = [], 
-  showNotificationBar = true,
-  notificationProps = {}
-} = Astro.props;
+const { title, description, image, noindex, schema } = Astro.props;
+
+const navLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'Services', href: '/services' },
+  { label: 'Contact', href: '/contact' },
+];
 ---
 
-<BaseLayout metadata={metadata} schemaData={schemaData}>
+<BaseLayout title={title} description={description} image={image} noindex={noindex} schema={schema}>
   <div class="site-layout">
-    {showNotificationBar && <NotificationBar {...notificationProps} />}
-    <Navigation />
+    <Header links={navLinks} />
     
     <main class="main-content" role="main">
       <slot />
     </main>
     
-    <Footer />
+    <Footer links={navLinks} />
   </div>
 </BaseLayout>
 
