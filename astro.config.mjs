@@ -1,7 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 
-import robotsTxt from 'astro-robots-txt';
+import icon from 'astro-icon';
 import sitemap from '@astrojs/sitemap';
 import partytown from '@astrojs/partytown';
 import compressor from 'astro-compressor';
@@ -20,6 +21,7 @@ export default defineConfig({
     liveContentCollections: true,
   },
   vite: {
+    plugins: [tailwindcss()],
     resolve: {
     alias: {
         '@': '/src',
@@ -65,7 +67,11 @@ export default defineConfig({
   },
   site: process.env.SITE_URL || 'https://stargazers.club',
   integrations: [
-    robotsTxt(), 
+    icon({
+      include: {
+        tabler: ['*'], // Include all tabler icons, or specify: ['home', 'menu', 'x', ...]
+      },
+    }),
     sitemap({
       changefreq: 'weekly',
       priority: 0.7,
